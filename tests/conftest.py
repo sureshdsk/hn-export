@@ -4,6 +4,7 @@ import pytest
 @pytest.fixture
 def mock_api_key(monkeypatch):
     monkeypatch.setenv("HASHNODE_API_KEY", "test-api-key-123")
+    monkeypatch.setattr("hn_blog_exporter.config.Config.HASHNODE_API_KEY", "test-api-key-123")
     return "test-api-key-123"
 
 
