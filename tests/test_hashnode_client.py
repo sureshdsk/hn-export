@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 
 import pytest
+
 from hn_blog_exporter.hashnode_client import HashnodeClient
 
 

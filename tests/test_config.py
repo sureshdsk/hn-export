@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from hn_blog_exporter.config import Config
 
 
