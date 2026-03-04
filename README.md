@@ -5,6 +5,7 @@ Export your Hashnode blog posts and drafts to markdown and JSON files with local
 ## Features
 
 - 📝 Export published posts and drafts (including unpublished drafts)
+- 📄 Export static pages (e.g., `/privacy-policy`)
 - 📚 Export series/collection metadata
 - 🖼️ Download and store images locally with smart URL handling
 - 📄 Output in Markdown and/or JSON formats
@@ -55,7 +56,7 @@ HASHNODE_API_KEY=your_api_key_here
 
 ### Basic Usage
 
-Export everything (posts, drafts, series) from your primary publication:
+Export everything (posts, drafts, static pages, series) from your primary publication:
 
 ```bash
 uv run hn-export
@@ -110,6 +111,10 @@ hn-export --posts-only --format markdown --no-images
 │   ├── markdown/          # Draft markdown files
 │   ├── json/              # Draft JSON files
 │   └── images/            # Downloaded images
+├── pages/
+│   ├── markdown/          # Static page markdown files
+│   ├── json/              # Static page JSON files
+│   └── images/            # Downloaded images from static page content
 ├── series/
 │   ├── {series-slug}.md   # Series metadata (markdown)
 │   └── {series-slug}.json # Series metadata (JSON)

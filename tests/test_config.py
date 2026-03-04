@@ -53,4 +53,7 @@ def test_create_directory_structure(temp_output_dir):
     assert (base_dir / "drafts" / "markdown").exists()
     assert (base_dir / "drafts" / "json").exists()
     assert (base_dir / "drafts" / "images").exists()
+    assert (base_dir / "pages" / "markdown").exists()
+    assert (base_dir / "pages" / "json").exists()
+    assert (base_dir / "pages" / "images").exists()
     assert (base_dir / "series").exists()

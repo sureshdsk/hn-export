@@ -45,6 +45,9 @@ class Config:
             base_dir / "drafts" / "markdown",
             base_dir / "drafts" / "json",
             base_dir / "drafts" / "images",
+            base_dir / "pages" / "markdown",
+            base_dir / "pages" / "json",
+            base_dir / "pages" / "images",
             base_dir / "series",
         ]
 

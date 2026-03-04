@@ -34,6 +34,7 @@ def mock_post_data():
         "updatedAt": "2024-01-02T15:00:00Z",
         "tags": [{"name": "Python", "slug": "python"}, {"name": "Testing", "slug": "testing"}],
         "url": "https://test.hashnode.dev/test-post",
+        "canonicalUrl": "https://canonical.example.com/test-post",
         "readTimeInMinutes": 5,
         "series": {"name": "Test Series", "slug": "test-series"},
     }
@@ -48,6 +49,7 @@ def mock_draft_data():
         "content": {"markdown": "# Draft Post\n\nThis is a draft."},
         "coverImage": {"url": "https://example.com/draft-cover.jpg"},
         "updatedAt": "2024-01-03T12:00:00Z",
+        "canonicalUrl": "https://canonical.example.com/draft-post",
         "tags": [{"name": "Draft", "slug": "draft"}],
         "series": None,
     }
@@ -63,6 +65,15 @@ def mock_series_data():
         "coverImage": "https://example.com/series-cover.jpg",
         "createdAt": "2024-01-01T00:00:00Z",
         "sortOrder": "asc",
+    }
+
+
+@pytest.fixture
+def mock_static_page_data():
+    return {
+        "title": "Privacy Policy",
+        "slug": "privacy-policy",
+        "content": {"markdown": "# Privacy Policy\n\nThis is a static page."},
     }
 
 

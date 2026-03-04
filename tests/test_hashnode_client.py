@@ -97,6 +97,29 @@ def test_get_series_list(mock_api_key, mock_requests_post, mock_series_data):
     assert series[0]["slug"] == "test-series"
 
 
+def test_get_static_pages(mock_api_key, mock_requests_post, mock_static_page_data):
+    mock_response = Mock()
+    mock_response.json.return_value = {
+        "data": {
+            "publication": {
+                "staticPages": {
+                    "edges": [{"node": mock_static_page_data, "cursor": "cursor1"}],
+                    "pageInfo": {"hasNextPage": False, "endCursor": "cursor1"},
+                }
+            }
+        }
+    }
+    mock_response.raise_for_status = Mock()
+    mock_requests_post.return_value = mock_response
+
+    client = HashnodeClient(mock_api_key)
+    pages = client.get_static_pages("test.hashnode.dev")
+
+    assert len(pages) == 1
+    assert pages[0]["title"] == "Privacy Policy"
+    assert pages[0]["slug"] == "privacy-policy"
+
+
 def test_graphql_error_handling(mock_api_key, mock_requests_post):
     mock_response = Mock()
     mock_response.json.return_value = {"errors": [{"message": "Invalid query"}]}

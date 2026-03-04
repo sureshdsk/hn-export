@@ -29,7 +29,7 @@ uv run hn-export
 ```
 This will:
 - Auto-detect your publication
-- Export posts, drafts, and series
+- Export posts, drafts, static pages, and series
 - Download all images
 - Output to `./{domain-name}/`
 
@@ -101,6 +101,10 @@ After running the exporter, you'll get:
 │   ├── markdown/
 │   ├── json/
 │   └── images/
+├── pages/
+│   ├── markdown/
+│   ├── json/
+│   └── images/
 └── series/
     ├── python-basics.md
     ├── python-basics.json
@@ -126,6 +130,7 @@ localCoverImage: "../images/my-first-post-cover.jpg"
 brief: "Learn Python basics in this tutorial"
 readTime: 5
 url: "https://blog.example.com/my-first-post"
+canonicalUrl: "https://canonical.example.com/my-first-post"
 ---
 
 # My First Post

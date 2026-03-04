@@ -141,6 +141,7 @@ def main(
     stats = {
         "posts": 0,
         "drafts": 0,
+        "pages": 0,
         "series": 0,
         "images": 0,
     }
@@ -195,6 +196,29 @@ def main(
                 exporter.export_posts(drafts, format, True, progress, export_task)
                 stats["drafts"] = len(drafts)
 
+        if not posts_only and not drafts_only and not series_only:
+            task = progress.add_task("[cyan]Fetching static pages...", total=None)
+            pages = client.get_static_pages(host)
+            progress.update(task, completed=1, total=1)
+
+            if pages:
+                if not no_images:
+                    img_task = progress.add_task(
+                        "[cyan]Downloading static page images...", total=None
+                    )
+
+                    images_dir = base_dir / "pages" / "images"
+                    downloaded, pages = image_downloader.download_images_batch(
+                        pages, images_dir, progress, img_task
+                    )
+                    stats["images"] += downloaded
+                    progress.update(img_task, completed=downloaded, total=downloaded)
+
+                export_task = progress.add_task("[cyan]Exporting static pages...", total=len(pages))
+
+                exporter.export_static_pages(pages, format, progress, export_task)
+                stats["pages"] = len(pages)
+
         if not posts_only and not drafts_only:
             task = progress.add_task("[cyan]Fetching series...", total=None)
             series_list = client.get_series_list(host)
@@ -223,6 +247,7 @@ def main(
 
     table.add_row("Posts Exported", str(stats["posts"]))
     table.add_row("Drafts Exported", str(stats["drafts"]))
+    table.add_row("Static Pages Exported", str(stats["pages"]))
     table.add_row("Series Exported", str(stats["series"]))
 
     if not no_images:

@@ -20,6 +20,7 @@ def test_generate_frontmatter(temp_output_dir, mock_post_data):
     assert 'series: "Test Series"' in frontmatter
     assert 'seriesSlug: "test-series"' in frontmatter
     assert "readTime: 5" in frontmatter
+    assert 'canonicalUrl: "https://canonical.example.com/test-post"' in frontmatter
     assert frontmatter.startswith("---\n")
     assert "---\n\n" in frontmatter
 
@@ -30,6 +31,7 @@ def test_generate_frontmatter_draft(temp_output_dir, mock_draft_data):
 
     assert 'status: "draft"' in frontmatter
     assert 'title: "Draft Post"' in frontmatter
+    assert 'canonicalUrl: "https://canonical.example.com/draft-post"' in frontmatter
 
 
 def test_export_post_markdown(temp_output_dir, mock_post_data):
@@ -89,6 +91,39 @@ def test_export_posts_both_formats(temp_output_dir, mock_post_data):
     assert count == 1
     assert (posts_dir / "markdown" / "2024-01-01-test-post.md").exists()
     assert (posts_dir / "json" / "test-post.json").exists()
+
+
+def test_generate_static_page_frontmatter(temp_output_dir, mock_static_page_data):
+    exporter = Exporter(temp_output_dir)
+    frontmatter = exporter.generate_static_page_frontmatter(mock_static_page_data)
+
+    assert 'title: "Privacy Policy"' in frontmatter
+    assert 'slug: "privacy-policy"' in frontmatter
+    assert 'type: "static-page"' in frontmatter
+
+
+def test_export_static_pages(temp_output_dir, mock_static_page_data):
+    exporter = Exporter(temp_output_dir)
+    pages_dir = temp_output_dir / "pages"
+    pages_dir.mkdir()
+    (pages_dir / "markdown").mkdir()
+    (pages_dir / "json").mkdir()
+
+    count = exporter.export_static_pages([mock_static_page_data], "both")
+
+    assert count == 1
+
+    md_file = pages_dir / "markdown" / "privacy-policy.md"
+    json_file = pages_dir / "json" / "privacy-policy.json"
+    assert md_file.exists()
+    assert json_file.exists()
+
+    md_content = md_file.read_text()
+    assert "# Privacy Policy" in md_content
+    assert 'type: "static-page"' in md_content
+
+    data = json.loads(json_file.read_text())
+    assert data["slug"] == "privacy-policy"
 
 
 def test_export_series_metadata(temp_output_dir, mock_series_data):

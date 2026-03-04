@@ -233,6 +233,7 @@ query Me($first: Int!) {
                                 slug
                             }
                             url
+                            canonicalUrl
                             readTimeInMinutes
                             series {
                                 name
@@ -285,6 +286,7 @@ query Me($first: Int!) {
                                 url
                             }
                             updatedAt
+                            canonicalUrl
                             tags {
                                 name
                                 slug
@@ -331,3 +333,46 @@ query Me($first: Int!) {
             after_cursor = page_info.get("endCursor")
 
         return all_drafts
+
+    def get_static_pages(self, host: str) -> list[dict]:
+        query = """
+        query Publication($host: String!, $first: Int!, $after: String) {
+            publication(host: $host) {
+                staticPages(first: $first, after: $after) {
+                    edges {
+                        node {
+                            title
+                            slug
+                            content {
+                                markdown
+                            }
+                        }
+                        cursor
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                }
+            }
+        }
+        """
+
+        all_pages = []
+        has_next_page = True
+        after_cursor = None
+
+        while has_next_page:
+            variables = {"host": host, "first": 20, "after": after_cursor}
+            data = self._execute_query(query, variables)
+
+            pages_data = data.get("publication", {}).get("staticPages", {})
+            edges = pages_data.get("edges", [])
+            page_info = pages_data.get("pageInfo", {})
+
+            all_pages.extend([edge["node"] for edge in edges])
+
+            has_next_page = page_info.get("hasNextPage", False)
+            after_cursor = page_info.get("endCursor")
+
+        return all_pages

@@ -50,6 +50,7 @@ class Exporter:
         local_cover = post.get("localCoverImage", "")
 
         url = post.get("url", "")
+        canonical_url = post.get("canonicalUrl", "")
         read_time = post.get("readTimeInMinutes", 0)
 
         frontmatter = "---\n"
@@ -86,6 +87,9 @@ class Exporter:
 
         if url:
             frontmatter += f'url: "{url}"\n'
+
+        if canonical_url:
+            frontmatter += f'canonicalUrl: "{canonical_url}"\n'
 
         frontmatter += "---\n\n"
 
@@ -150,6 +154,79 @@ class Exporter:
 
             if format_type in ["json", "both"]:
                 self.export_post_json(post, json_dir)
+                if format_type == "json":
+                    count += 1
+
+            if progress and task_id is not None:
+                progress.update(task_id, advance=1)
+
+        return count
+
+    def generate_static_page_frontmatter(self, page: dict) -> str:
+        title = page.get("title", "Untitled")
+        slug = page.get("slug", "")
+        url = page.get("url", "")
+        published_at = page.get("publishedAt")
+
+        frontmatter = "---\n"
+        frontmatter += f'title: "{title}"\n'
+        frontmatter += f'slug: "{slug}"\n'
+        frontmatter += 'type: "static-page"\n'
+
+        if published_at:
+            frontmatter += f'publishedAt: "{self.format_datetime(published_at)}"\n'
+
+        if url:
+            frontmatter += f'url: "{url}"\n'
+
+        frontmatter += "---\n\n"
+        return frontmatter
+
+    def export_static_page_markdown(self, page: dict, output_dir: Path) -> Path:
+        slug = page.get("slug", "untitled")
+        filename = f"{slug}.md"
+
+        frontmatter = self.generate_static_page_frontmatter(page)
+
+        content = page.get("content", {})
+        if isinstance(content, dict):
+            markdown_content = content.get("markdown", "")
+        else:
+            markdown_content = content or ""
+
+        filepath = output_dir / filename
+        filepath.write_text(frontmatter + markdown_content, encoding="utf-8")
+
+        return filepath
+
+    def export_static_page_json(self, page: dict, output_dir: Path) -> Path:
+        slug = page.get("slug", "untitled")
+        filename = f"{slug}.json"
+
+        filepath = output_dir / filename
+        filepath.write_text(json.dumps(page, indent=2, ensure_ascii=False), encoding="utf-8")
+
+        return filepath
+
+    def export_static_pages(
+        self,
+        pages: list[dict],
+        format_type: str,
+        progress: Progress | None = None,
+        task_id: int | None = None,
+    ) -> int:
+        markdown_dir = self.base_dir / "pages" / "markdown"
+        json_dir = self.base_dir / "pages" / "json"
+
+        count = 0
+
+        for page in pages:
+            if format_type in ["markdown", "both"]:
+                self.export_static_page_markdown(page, markdown_dir)
+                count += 1
+
+            if format_type in ["json", "both"]:
+                self.export_static_page_json(page, json_dir)
                 if format_type == "json":
                     count += 1
 
