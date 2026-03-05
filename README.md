@@ -2,6 +2,8 @@
 
 Export your Hashnode blog posts and drafts to markdown and JSON files with local image storage.
 
+https://github.com/user-attachments/assets/814a31d2-a0c0-4120-b183-5cfb18acff30
+
 ## Features
 
 - 📝 Export published posts and drafts (including unpublished drafts)
@@ -15,38 +17,35 @@ Export your Hashnode blog posts and drafts to markdown and JSON files with local
 - 🚀 Built with Typer for modern CLI experience
 - ✅ 35 unit tests with full mock coverage
 
-## Dependencies
-
-- `requests` - HTTP client for GraphQL
-- `python-dotenv` - Environment variable management
-- `typer` - Modern CLI framework with type hints
-- `rich` - Beautiful terminal UI
-- `httpx` - Async HTTP client for images
-- `pillow` - Image processing
-
-All managed by **uv** for fast, reliable dependency management.
-
 ## Installation
 
-### Using uv (recommended)
+### Option 1: Install via pip
 
 ```bash
-git clone <repository-url>
-cd hn-blog-exporter
-uv sync
+python -m venv hn-export-env
+source hn-export-env/bin/activate
+pip install git+https://github.com/sureshdsk/hn-export.git
 ```
 
-### Using pip
+### Option 2: Clone and run with uv
 
 ```bash
-pip install -e .
+git clone https://github.com/sureshdsk/hn-export.git
+cd hn-export
+uv sync
 ```
 
 ## Setup
 
 1. Get your Hashnode API key from [https://hashnode.com/settings/developer](https://hashnode.com/settings/developer)
 
-2. Create a `.env` file in the project root:
+2. Set the environment variable:
+
+```bash
+export HASHNODE_API_KEY=your_api_key_here
+```
+
+Or create a `.env` file in the directory where you run the command:
 
 ```bash
 HASHNODE_API_KEY=your_api_key_here
@@ -58,14 +57,16 @@ HASHNODE_API_KEY=your_api_key_here
 
 Export everything (posts, drafts, static pages, series) from your primary publication:
 
-```bash
-uv run hn-export
-```
-
-Or if installed globally:
+If installed via pip:
 
 ```bash
 hn-export
+```
+
+If using the cloned repo with uv:
+
+```bash
+uv run hn-export
 ```
 
 ### Advanced Options
@@ -246,6 +247,10 @@ When errors occur during export, two log files are created:
 
 The export summary will show the error count and log file location.
 
+
+## Screenshot
+
+![Hashnode Blog Exporter](docs/hashnode-blog-exporter.png)
 
 ## License
 
